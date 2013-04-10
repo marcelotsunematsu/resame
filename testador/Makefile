@@ -1,4 +1,4 @@
-PYTHON=python2.7
+PYTHON=python2.7 -B
 
 .PHONY: test clean
 
