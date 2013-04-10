@@ -230,6 +230,8 @@ def parse_resolucao(linhas):
         return []
     resolucao = []
     i = 0
+    while i < len(linhas) and linhas[i] == '':
+        i += 1
     while i < len(linhas):
         jogada = tuple(parse_ints(linhas[i]))
         i += 1
