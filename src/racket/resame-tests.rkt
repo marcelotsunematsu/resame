@@ -7,7 +7,8 @@
 
 (require rackunit/text-ui rackunit "resame.rkt")
 
-(define same '((2 2 2) (3 2 1) (3 2 3) (1 3 1)))
+(define same-basic '((2 2 2) (3 2 1) (3 2 3) (1 3 1)))
+(define same-fast #(#(2 2 2) #(3 2 1) #(3 2 3) #(1 3 1)))
 
 (define p12 (position 1 2))
 
@@ -25,19 +26,21 @@
 (define test-suite-resame
   (test-suite
    "Resame"
-   (test-suite-same-create-group "basic" same-create-group-basic)
-   (test-suite-same-remove-group "basic" same-remove-group-basic)
-   (test-suite-same-create-group "fast" same-create-group-fast)
-   (test-suite-same-remove-group "fast" same-remove-group-fast)))
+   (test-suite-same-create-group "basic" same-basic same-create-group-basic)
+   (test-suite-same-remove-group "basic" same-basic same-remove-group-basic)
+   (test-suite-same-create-group "fast" same-fast same-create-group-fast)
+   (test-suite-same-remove-group "fast" same-fast same-remove-group-fast)))
 
-(define (test-suite-same-create-group mode same-create-group)
+(define (test-suite-same-create-group mode same same-create-group)
   (test-suite
    (string-append "Função criar grupo - " mode)
    (test-case
     "Caso 1"
     ; Os elementos da lista retornada pela função same-create-group podem
-    ; estar em qualquer ordem, desta forma, é necessário ordenar o grupo
-    ; criado para fazer a comparação com o grupo esperado.
+    ; estar em qualquer ordem, desta forma, neste teste é necessário
+    ; ordenar o grupo criado para fazer a comparação com o grupo esperado.
+    ; A sua implementação pode retornar as posições do grupo em qualquer
+    ; ordem.
     (check-equal? (sort (same-create-group same p12) position<?)
                   ;esperado
                   group12))
@@ -47,7 +50,7 @@
                   ;esperado
                   group02))))
 
-(define (test-suite-same-remove-group mode same-remove-group)
+(define (test-suite-same-remove-group mode same same-remove-group)
   (test-suite
    (string-append "Função remover grupo - " mode)
    (test-case
@@ -55,7 +58,10 @@
     ; Como este teste é usado para as funções
     ; same-create-group-basic e same-create-group-fast
     ; é necessário converter a resposta para uma lista para fazer
-    ; a comparação com o resultado esperado.
+    ; a comparação com o resultado esperado. Observe que isto
+    ; é apenas neste teste. A sua implementação da função basic deve
+    ; retornar uma lista de listas e a função fast um vetor de vetores,
+    ; ambos sem as posições com cor 0.
     (check-equal? (sequence*->list* (same-remove-group same group12))
                   ;esperado
                   '((3 1) (3 3) (1 3 1))))
@@ -77,7 +83,7 @@
       (< p1-lin p2-lin)))
 
 (define (sequence*->list* a)
-  (if (vector? a)
+  (if (or (vector? a) (list? a))
       (for/list ([e a])
         (sequence*->list* e))
       a))
