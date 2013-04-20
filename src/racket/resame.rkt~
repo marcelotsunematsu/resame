@@ -21,8 +21,7 @@
          grupo-flood
          ler-jogo
          filtra-vizinhos
-         posicao-valida
-         arquivo->jogo)
+         posicao-valida)
 
 (define (lista index)
   #f)
