@@ -74,9 +74,18 @@
   (test-suite 
    "Remover Grupo"
    (test-case
-    "Ler jogo"
-   (check-equal? (ler-jogo "/home/fabricio/resame/testes/alguns/com-solucao/3-3-3")
-              '(("1" "1" "1") ("3" "3" "2") ("2" "1" "2"))))))
+    "Remove grupo valido"
+   (check-equal? (sequence*->list* (same-remove-group same group12))
+                  ;esperado
+                  '((3 1) (3 3) (1 3 1))))
+   
+   (test-case
+    "Remove grupo"
+   (check-equal? (#t)
+                  ;esperado
+                  #t))
+   
+   ))
 
 (define (infra)
   (test-case

@@ -14,7 +14,6 @@
 
 (provide cor
          vizinhos
-         lista
          remove-linha
          remove-coluna
          vizinhos
@@ -22,10 +21,9 @@
          ler-jogo
          filtra-vizinhos
          posicao-valida
-         arquivo->jogo)
+         arquivo->jogo
+         same-remove-group)
 
-(define (lista index)
-  #f)
 
 (define (cor same p)
   (list-ref (list-ref same (position-col p))
@@ -70,13 +68,6 @@
       (let ([vizinhos-atual (filtra-vizinhos (first fronteira) acumulador same)])
          (grupo-flood same (append acumulador vizinhos-atual) (append (rest fronteira) vizinhos-atual)))))
 
-  
-  ;funcao recursiva
-  ;se a fronteira é vazia -> fim: retorna acc, 
-  ;senão retira o primeiro da fronteira, adiciona os vizinhos 
-  ;da mesma cor no grupo e na fronteira
-  
-
 (define (resolver-linha jogo lin col)
   '())
 
@@ -85,7 +76,6 @@
 
 (define (resolver jogo)
   (resolver-coluna jogo 0))
-
 
 ; ----------------------------------------------------------------------
 ; Esta função recebe como parâmetro um jogo same e retorna uma lista de
@@ -115,6 +105,10 @@
 
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.
+(define (same-remove-group same group)
+  '())
+
+
 (define (same-remove-group-basic same group)
   '())
 
