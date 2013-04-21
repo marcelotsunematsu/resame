@@ -110,13 +110,26 @@
 
 ;; Definições para remoção de grupo
 
+(define (remover-indice indice lista)
+  (let ([cabeca (if (> indice 0)
+                    (take lista indice)
+                    #f)]
+        [calda (if (> (+ indice 2) (length lista))
+                   #f
+                   (take-right lista (- (length lista) indice 1)))])        
+    (cond [(and (not cabeca) (not calda)) #f]
+          [(not cabeca) calda]
+          [(not calda) cabeca]
+          [else (append cabeca calda)]))
+  )
+  
 (define (cabeca-col posicao same)
   (if (<= (position-col posicao) 0)
       #f
       (take same (position-col posicao))))
 
 (define (corpo-col-filtrado posicao same)
-  (remove (+ (position-lin posicao) 1) (list-ref same (position-col posicao))))
+  (remover-indice (position-lin posicao) (list-ref same (position-col posicao))))
 
 (define (calda-col posicao same)
     (if (>= (+ (position-col posicao) 1) (length same))
@@ -127,8 +140,12 @@
   (let ([cabeca (cabeca-col posicao same)]
         [corpo (corpo-col-filtrado posicao same)]
         [calda (calda-col posicao same)])
-    '()
-    ))
+    (cond 
+      [(and cabeca (not calda)) (append cabeca corpo)]
+      [(and (not cabeca) calda) (append corpo calda)]
+      [(and (not cabeca) (not calda)) corpo]
+      [(and cabeca calda (append cabeca corpo calda))])))
+        
 
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.
