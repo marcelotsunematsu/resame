@@ -11,7 +11,7 @@
          same-solve-fast
          main)
 
-
+; Provide para testes unitários
 (provide cor
          vizinhos
          remove-linha
@@ -22,7 +22,12 @@
          filtra-vizinhos
          posicao-valida
          arquivo->jogo
-         same-remove-group)
+         same-remove-group
+         remove-posicao
+         cabeca-col
+         corpo-col-filtrado
+         calda-col
+         )
 
 
 (define (cor same p)
@@ -102,6 +107,28 @@
 
 (define (same-create-group-fast same p)
   '())
+
+;; Definições para remoção de grupo
+
+(define (cabeca-col posicao same)
+  (if (<= (position-col posicao) 0)
+      #f
+      (take same (position-col posicao))))
+
+(define (corpo-col-filtrado posicao same)
+  (remove (+ (position-lin posicao) 1) (list-ref same (position-col posicao))))
+
+(define (calda-col posicao same)
+    (if (>= (+ (position-col posicao) 1) (length same))
+      #f
+      (take-right same (- (length same) (+ (position-col posicao)1)))))
+
+(define (remove-posicao posicao same) 
+  (let ([cabeca (cabeca-col posicao same)]
+        [corpo (corpo-col-filtrado posicao same)]
+        [calda (calda-col posicao same)])
+    '()
+    ))
 
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.
