@@ -72,55 +72,26 @@
 
 (define (remover-grupo)
   (test-suite 
-   "Remover Grupo"
+   "Remover Grupo"    
       
    (test-case
-    "Cabeça das colunas existente"
-   (check-equal? (cabeca-col (position 1 1) same) 
+    "Remove grupo"
+   (check-equal? (remove-grupo same group12) 
                   ;esperado
-                  '((2 2 2))))
+                 '((3 1) (3 3) (1 3 1))))
    
    (test-case
-    "Cabeça das colunas inexistente"
-   (check-equal? (cabeca-col (position 1 0) same) 
+    "Remove elemento do grupo '((0 0)(1 0)(1 1)(1 2)(2 0)) da coluna '(2 2 2) 0"
+    (check-equal? (remove-elemento-coluna 0 '(2 2 2) group12 0 '())
                   ;esperado
                   #f))
    
    (test-case
-    "Corpo das colunas"
-   (check-equal? (corpo-col-filtrado (position 1 1) same) 
+    "Remove elemento do grupo da coluna '((0 0)(1 0)(1 1)(1 2)(2 0)) da coluna '(3 2 1) 1"
+    (check-equal? (remove-elemento-coluna 1 '(3 2 1) group12)
                   ;esperado
-                 '(3 1)))
+                  '(3 1)))
    
-   (test-case
-    "Calda das colunas 0"
-   (check-equal? (calda-col (position 0 0) same) 
-                  ;esperado
-                 '((3 2 1)(3 2 3)(1 3 1))))
-
-   (test-case
-    "Calda das colunas 1"
-   (check-equal? (calda-col (position 0 1) same) 
-                  ;esperado
-                 '((3 2 3)(1 3 1))))
-   
-   (test-case
-    "Calda das colunas 2"
-   (check-equal? (calda-col (position 0 2) same) 
-                  ;esperado
-                 '((1 3 1))))
-   
-   (test-case
-    "Calda das colunas inexistente"
-   (check-equal? (calda-col (position 1 3) same) 
-                  ;esperado
-                 #f))
-   
-   (test-case
-    "Remove posição"
-   (check-equal? (remove-posicao (position 0 0) same) 
-                  ;esperado
-                  '((2 2) (3 2 1) (3 2 3) (1 3 1))))
    
    (test-case    
     "Remove grupo valido"

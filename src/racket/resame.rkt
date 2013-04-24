@@ -23,11 +23,8 @@
          posicao-valida
          arquivo->jogo
          same-remove-group
-         remove-posicao
-         cabeca-col
-         corpo-col-filtrado
-         calda-col
-         )
+         remove-grupo
+)
 
 
 (define (cor same p)
@@ -73,6 +70,10 @@
       (let ([vizinhos-atual (filtra-vizinhos (first fronteira) acumulador same)])
          (grupo-flood same (append acumulador vizinhos-atual) (append (rest fronteira) vizinhos-atual)))))
 
+(define (contains? l i)
+  (if (empty? l) #f
+      (or (equal? (first l) i) (contains? (rest l) i))))
+
 (define (resolver-linha jogo lin col)
   '())
 
@@ -110,42 +111,28 @@
 
 ;; Definições para remoção de grupo
 
-(define (remover-indice indice lista)
-  (let ([cabeca (if (> indice 0)
-                    (take lista indice)
-                    #f)]
-        [calda (if (> (+ indice 2) (length lista))
-                   #f
-                   (take-right lista (- (length lista) indice 1)))])        
-    (cond [(and (not cabeca) (not calda)) #f]
-          [(not cabeca) calda]
-          [(not calda) cabeca]
-          [else (append cabeca calda)]))
-  )
+;(define (remove-elemento-coluna posicao-coluna coluna grupo linha retorno)
+;    (if (empty? coluna)
+;        retorno
+;        (remove-elemento-coluna posicao-coluna 
+;                                (rest coluna)
+;                                grupo
+;                                (+ linha 1)
+;                                (if (filter (lambda (c)
+;                                          (not (equal? (position linha posicao-coluna) c)))
+;                                       grupo))
+;                                    '()
+;                                    '()))))   ; adciona o retorno                                                  
+
+(define (remove-elemento-coluna posicao-coluna coluna grupo retorno)
+  (filter (lambda (c)
+                (not (equal? (position linha posicao-coluna) c)))
+              grupo))
   
-(define (cabeca-col posicao same)
-  (if (<= (position-col posicao) 0)
-      #f
-      (take same (position-col posicao))))
-
-(define (corpo-col-filtrado posicao same)
-  (remover-indice (position-lin posicao) (list-ref same (position-col posicao))))
-
-(define (calda-col posicao same)
-    (if (>= (+ (position-col posicao) 1) (length same))
-      #f
-      (take-right same (- (length same) (+ (position-col posicao)1)))))
-
-(define (remove-posicao posicao same) 
-  (let ([cabeca (cabeca-col posicao same)]
-        [corpo (corpo-col-filtrado posicao same)]
-        [calda (calda-col posicao same)])
-    (cond 
-      [(and cabeca (not calda)) (append cabeca corpo)]
-      [(and (not cabeca) calda) (append corpo calda)]
-      [(and (not cabeca) (not calda)) corpo]
-      [(and cabeca calda (append cabeca corpo calda))])))
-        
+(define (remove-grupo linha coluna grupo same)
+'()
+)
+            
 
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.
