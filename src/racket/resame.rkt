@@ -23,6 +23,7 @@
          posicao-valida
          arquivo->jogo
          same-remove-group
+         remove-elemento-coluna
          remove-grupo
 )
 
@@ -122,17 +123,45 @@
 ;                                          (not (equal? (position linha posicao-coluna) c)))
 ;                                       grupo))
 ;                                    '()
-;                                    '()))))   ; adciona o retorno                                                  
+;                                    '())))   ; adciona o retorno                                                  
 
-(define (remove-elemento-coluna posicao-coluna coluna grupo retorno)
-  (filter (lambda (c)
-                (not (equal? (position linha posicao-coluna) c)))
-              grupo))
-  
+; ---------------------Rascunho
+
+(define (remove-elemento-coluna2 coluna-position coluna grupo)
+  (foldr (lambda(elem-grupo acc) 
+           (filter (lambda(elem-coluna)
+                     (not (equal? elem-coluna elem-grupo)))
+                   acc))
+         coluna
+         grupo))
+
+(define (remove-elemento-coluna col-n coluna grupo)
+  (foldr (lambda(elem-grupo acc) 
+          (let loop ((n 0)(retorno '()))
+            (if (equal? n (length coluna))
+                retorno
+                (loop (add1 n) (if (not (equal? (position n col-n) elem-grupo))
+                                   (cons acc (position n col-n))
+                                   retorno)))))
+         coluna
+         grupo))
+
+(let loop ((n 1))
+  (if (> n 10)
+      '()
+      (cons n
+            (loop (+ n 1)))))
+
+(foldr (lambda (v l)
+         (cons (add1 v) l))
+       '()
+       '(1 2 3 4))
+
+; ---------------------Rascunho
+
 (define (remove-grupo linha coluna grupo same)
 '()
 )
-            
 
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.

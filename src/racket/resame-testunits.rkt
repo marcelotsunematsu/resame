@@ -82,7 +82,7 @@
    
    (test-case
     "Remove elemento do grupo '((0 0)(1 0)(1 1)(1 2)(2 0)) da coluna '(2 2 2) 0"
-    (check-equal? (remove-elemento-coluna 0 '(2 2 2) group12 0 '())
+    (check-equal? (remove-elemento-coluna 0 '(2 2 2) group12)
                   ;esperado
                   #f))
    
