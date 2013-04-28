@@ -22,9 +22,7 @@
          filtra-vizinhos
          posicao-valida
          arquivo->jogo
-         same-remove-group
-         remove-elemento-coluna
-         remove-grupo
+         same-remove-group        
 )
 
 
@@ -112,65 +110,29 @@
 
 ;; Definições para remoção de grupo
 
-;(define (remove-elemento-coluna posicao-coluna coluna grupo linha retorno)
-;    (if (empty? coluna)
-;        retorno
-;        (remove-elemento-coluna posicao-coluna 
-;                                (rest coluna)
-;                                grupo
-;                                (+ linha 1)
-;                                (if (filter (lambda (c)
-;                                          (not (equal? (position linha posicao-coluna) c)))
-;                                       grupo))
-;                                    '()
-;                                    '())))   ; adciona o retorno                                                  
+(define (itera lista acc f)
+  (define (itera-rec i)
+    (if (>= i (length lista))
+        acc
+        (f i (list-ref lista i) (itera-rec (add1 i)))))
+  (itera-rec 0))
 
-; ---------------------Rascunho
-
-(define (remove-elemento-coluna2 coluna-position coluna grupo)
-  (foldr (lambda(elem-grupo acc) 
-           (filter (lambda(elem-coluna)
-                     (not (equal? elem-coluna elem-grupo)))
-                   acc))
-         coluna
-         grupo))
-
-(define (remove-elemento-coluna col-n coluna grupo)
-  (foldr (lambda(elem-grupo acc) 
-          (let loop ((n 0)(retorno '()))
-            (if (equal? n (length coluna))
-                retorno
-                (loop (add1 n) (if (not (equal? (position n col-n) elem-grupo))
-                                   (cons acc (position n col-n))
-                                   retorno)))))
-         coluna
-         grupo))
-
-(let loop ((n 1))
-  (if (> n 10)
-      '()
-      (cons n
-            (loop (+ n 1)))))
-
-(foldr (lambda (v l)
-         (cons (add1 v) l))
-       '()
-       '(1 2 3 4))
-
-; ---------------------Rascunho
-
-(define (remove-grupo linha coluna grupo same)
-'()
-)
+(define (remove-grupo-coluna col coluna grupo)
+  (itera coluna '()
+         (lambda (lin cor acc)
+           (if (member (position lin col) grupo) acc (cons cor acc)))))
 
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.
 (define (same-remove-group same group)
-  '())
+   (itera same '()
+         (lambda (col coluna acc)
+           (define coluna-nova (remove-grupo-coluna col coluna group))
+           (if (empty? coluna-nova) acc (cons coluna-nova acc)))))
 
 
 (define (same-remove-group-basic same group)
-  '())
+  (same-remove-group same group))
 
 (define (same-remove-group-fast same p)
   #())

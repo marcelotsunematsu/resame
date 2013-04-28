@@ -21,7 +21,7 @@
    "Resame Units"
    (criar-grupo)
    (remover-grupo)
-   (infra)))
+   ))
 
 (define (criar-grupo)
   (test-suite 
@@ -74,24 +74,7 @@
   (test-suite 
    "Remover Grupo"    
       
-   (test-case
-    "Remove grupo"
-   (check-equal? (remove-grupo same group12) 
-                  ;esperado
-                 '((3 1) (3 3) (1 3 1))))
-   
-   (test-case
-    "Remove elemento do grupo '((0 0)(1 0)(1 1)(1 2)(2 0)) da coluna '(2 2 2) 0"
-    (check-equal? (remove-elemento-coluna 0 '(2 2 2) group12)
-                  ;esperado
-                  #f))
-   
-   (test-case
-    "Remove elemento do grupo da coluna '((0 0)(1 0)(1 1)(1 2)(2 0)) da coluna '(3 2 1) 1"
-    (check-equal? (remove-elemento-coluna 1 '(3 2 1) group12)
-                  ;esperado
-                  '(3 1)))
-   
+
    
    (test-case    
     "Remove grupo valido"
@@ -100,12 +83,6 @@
                   '((3 1) (3 3) (1 3 1))))
    
    ))
-
-(define (infra)
-  (test-case
-    "arquivo->jogo"
-    (check-equal? (arquivo->jogo same "/home/fabricio/resame/testes/alguns/com-solucao/3-3-3") 
-                  '((1 1 1) (3 3 2) (2 1 2)))))
 
 
 
