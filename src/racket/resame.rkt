@@ -91,12 +91,35 @@
 ; Esta função não é testada no arquivo resame-tests.rkt.
 ; Esta função é testada pelo testador externo.
 
-; criar grupo posicao remove, chama o proximo grupo e verifica se 
+; Funções auxiliares para resolver jogo
 
+(define (itera-jogo same acumulador iterador)
+  (itera same acumulador
+         (lambda (col coluna acc)
+           (itera coluna acc
+                  (lambda (lin cor acc2)
+                    (iterador (position lin col) acc2))))))
+
+(define (gera-grupo-e-remove same p)
+  (define grupo (same-create-group-basic same p))
+  (if grupo ; ver se o grupo é valido, se nao for retorna #f
+      (same-remove-group same grupo)
+      #f))
+
+; Funções auxiliares para resolver jogo fim
 
 (define (same-solve-basic same)
-  ;lista de (position 1 2)
-  #f)
+  (itera-jogo same #f 
+            (lambda (p acc)
+              (cond [(not (equal? acc #f)) acc] ; resolvido
+                    [(empty? same) '()]
+                    [else 
+                     (define novo-jogo (gera-grupo-e-remove same p))
+                     (define solucao (resolver novo-jogo))
+                     (if solucao
+                         (cons p solucao)
+                         #f)])))
+  )
 
 (define (same-solve-fast same)
   #f)
@@ -115,12 +138,6 @@
 
 ;; Definições para remoção de grupo
 
-(define (itera lista acc f)
-  (define (itera-rec i)
-    (if (>= i (length lista))
-        acc
-        (f i (list-ref lista i) (itera-rec (add1 i)))))
-  (itera-rec 0))
 
 (define (remove-grupo-coluna col coluna grupo)
   (itera coluna '()
@@ -141,30 +158,9 @@
 (define (same-remove-group-fast same p)
   #())
 
-(define (itera-jogo same acumulador iterador)
-  (itera same acumulador
-         (lambda (col coluna acc)
-           (itera coluna acc
-                  (lambda (lin cor acc2)
-                    (iterador (position lin col) acc2))))))
 
-(define (gera-grupo-e-remove same p)
-  (define grupo (gera-grupo p))
-  (if grupo ; ver se o grupo é valido, se nao for retorna #f
-      (remove-grupo same grupo)
-      #f))
-     
 
-(itera-jogo same #f 
-            (lambda (p acc)
-              (cond [(not (equal? acc #f)) acc] ; resolvido
-                    [(empty? same) '()]
-                    [else 
-                     (define novo-jogo (gera-grupo-e-remove same p))
-                     (define solucao (resolver novo-jogo))
-                     (if solucao
-                         (cons p solucao)
-                         #f)])))
+
 
 ; Esta é a função principal. Ela é chamada pelo arquivo resame-main.rkt que
 ; passa como parâmetro o modo de resolução ("basico" ou "fast") e
@@ -196,6 +192,13 @@
             (matrix-transpose (map rest lst)))))
 
 ;; Extras
+
+(define (itera lista acc f)
+  (define (itera-rec i)
+    (if (>= i (length lista))
+        acc
+        (f i (list-ref lista i) (itera-rec (add1 i)))))
+  (itera-rec 0))
 
 (define (ler-jogo arquivo)
   (read-matrix (open-input-file arquivo)))
