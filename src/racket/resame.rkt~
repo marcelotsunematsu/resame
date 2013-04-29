@@ -11,7 +11,7 @@
          same-solve-fast
          main)
 
-
+; Provide para testes unitários
 (provide cor
          vizinhos
          remove-linha
@@ -22,7 +22,8 @@
          filtra-vizinhos
          posicao-valida
          arquivo->jogo
-         same-remove-group)
+         same-remove-group        
+)
 
 
 (define (cor same p)
@@ -68,6 +69,10 @@
       (let ([vizinhos-atual (filtra-vizinhos (first fronteira) acumulador same)])
          (grupo-flood same (append acumulador vizinhos-atual) (append (rest fronteira) vizinhos-atual)))))
 
+(define (contains? l i)
+  (if (empty? l) #f
+      (or (equal? (first l) i) (contains? (rest l) i))))
+
 (define (resolver-linha jogo lin col)
   '())
 
@@ -103,14 +108,31 @@
 (define (same-create-group-fast same p)
   '())
 
+;; Definições para remoção de grupo
+
+(define (itera lista acc f)
+  (define (itera-rec i)
+    (if (>= i (length lista))
+        acc
+        (f i (list-ref lista i) (itera-rec (add1 i)))))
+  (itera-rec 0))
+
+(define (remove-grupo-coluna col coluna grupo)
+  (itera coluna '()
+         (lambda (lin cor acc)
+           (if (member (position lin col) grupo) acc (cons cor acc)))))
+
 ; Esta função recebe como parâmetro um jogo same e um grupo (lista de posições)
 ; e cria um novo jogo removendo as posições no grupo.
 (define (same-remove-group same group)
-  '())
+   (itera same '()
+         (lambda (col coluna acc)
+           (define coluna-nova (remove-grupo-coluna col coluna group))
+           (if (empty? coluna-nova) acc (cons coluna-nova acc)))))
 
 
 (define (same-remove-group-basic same group)
-  '())
+  (same-remove-group same group))
 
 (define (same-remove-group-fast same p)
   #())

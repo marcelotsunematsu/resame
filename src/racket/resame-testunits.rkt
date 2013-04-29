@@ -73,11 +73,25 @@
 (define (remover-grupo)
   (test-suite 
    "Remover Grupo"    
-      
-
+   (test-case
+    "Itera"
+    (check-equal? (itera '((position 0 0)(position 1 0)(position 2 0)(position 3 0)) '() 
+   )))
    
    (test-case    
     "Remove grupo valido"
+   (check-equal? (sequence*->list* (same-remove-group same group12))
+                  ;esperado
+                  '((3 1) (3 3) (1 3 1))))
+   
+   ))
+
+(define (resolve-jogo)
+  (test-suite 
+   "Resolve jogo"    
+   
+   (test-case    
+    "Resolve jogo com solução"
    (check-equal? (sequence*->list* (same-remove-group same group12))
                   ;esperado
                   '((3 1) (3 3) (1 3 1))))

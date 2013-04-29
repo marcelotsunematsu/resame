@@ -90,7 +90,12 @@
 ; que será processado por esta função.
 ; Esta função não é testada no arquivo resame-tests.rkt.
 ; Esta função é testada pelo testador externo.
+
+; criar grupo posicao remove, chama o proximo grupo e verifica se 
+
+
 (define (same-solve-basic same)
+  ;lista de (position 1 2)
   #f)
 
 (define (same-solve-fast same)
@@ -130,12 +135,36 @@
            (define coluna-nova (remove-grupo-coluna col coluna group))
            (if (empty? coluna-nova) acc (cons coluna-nova acc)))))
 
-
 (define (same-remove-group-basic same group)
   (same-remove-group same group))
 
 (define (same-remove-group-fast same p)
   #())
+
+(define (itera-jogo same acumulador iterador)
+  (itera same acumulador
+         (lambda (col coluna acc)
+           (itera coluna acc
+                  (lambda (lin cor acc2)
+                    (iterador (position lin col) acc2))))))
+
+(define (gera-grupo-e-remove same p)
+  (define grupo (gera-grupo p))
+  (if grupo ; ver se o grupo é valido, se nao for retorna #f
+      (remove-grupo same grupo)
+      #f))
+     
+
+(itera-jogo same #f 
+            (lambda (p acc)
+              (cond [(not (equal? acc #f)) acc] ; resolvido
+                    [(empty? same) '()]
+                    [else 
+                     (define novo-jogo (gera-grupo-e-remove same p))
+                     (define solucao (resolver novo-jogo))
+                     (if solucao
+                         (cons p solucao)
+                         #f)])))
 
 ; Esta é a função principal. Ela é chamada pelo arquivo resame-main.rkt que
 ; passa como parâmetro o modo de resolução ("basico" ou "fast") e
