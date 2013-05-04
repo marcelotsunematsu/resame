@@ -115,7 +115,7 @@
                     [(empty? same) '()]
                     [else 
                      (define novo-jogo (gera-grupo-e-remove same p))
-                     (define solucao (resolver novo-jogo))
+                     (define solucao (same-solve-basic novo-jogo))
                      (if solucao
                          (cons p solucao)
                          #f)])))
@@ -134,7 +134,10 @@
   )
 
 (define (same-create-group-fast same p)
-  '())
+  (let ([grupo (grupo-flood same '() (list p))])
+    (if (empty? grupo) 
+        #f
+        grupo)))
 
 ;; Definições para remoção de grupo
 
@@ -156,11 +159,7 @@
   (same-remove-group same group))
 
 (define (same-remove-group-fast same p)
-  #())
-
-
-
-
+   #f)
 
 ; Esta é a função principal. Ela é chamada pelo arquivo resame-main.rkt que
 ; passa como parâmetro o modo de resolução ("basico" ou "fast") e
